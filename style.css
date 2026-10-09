@@ -23,7 +23,7 @@
 ========================================================= */
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:auto}
-body{background:var(--black);color:white;font-family:"DM Sans",sans-serif;overflow-x:hidden}
+body{background:var(--black);color:white;font-family:"DM Sans",sans-serif;overflow-x:clip}
 body.owner-open{overflow:hidden}
 button,input,select,textarea{font-family:inherit}
 button{cursor:pointer}
@@ -372,7 +372,7 @@ a{color:inherit;text-decoration:none}
 }
 
 @media (max-width:600px){
-    html,body{width:100%;overflow-x:hidden}
+    html,body{width:100%;overflow-x:clip}
     .nav{height:64px;padding:0 16px}
     .logo{font-size:9px;letter-spacing:4px}
     .owner-button{padding:8px 10px;font-size:6px}
