@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LUMÉA Beauty Studio</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<!-- Three.js (3D collection) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+
+<style>
+
+/* =========================================================
+   ROOT
+========================================================= */
+:root{
+    --black:#11100f;
+    --black2:#1d1918;
+    --cream:#f4eee8;
+    --cream2:#e7d9cf;
+    --pink:#a96872;
+    --pink2:#d39ca0;
+    --brown:#80665a;
+    --gold:#b99561;
+    --white:#ffffff;
+    --gray:#77716d;
+    --line:#ddd5ce;
+    --green:#347448;
+    --red:#a44848;
+    --orange:#9c711f;
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto}
+body{background:var(--black);color:white;font-family:"DM Sans",sans-serif;overflow-x:hidden}
+body.owner-open{overflow:hidden}
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* =========================================================
+   LOADER
+========================================================= */
+.loader{position:fixed;inset:0;z-index:999999;background:#11100f;display:flex;align-items:center;justify-content:center}
+.loader-content{text-align:center}
+.loader-brand{font-size:11px;letter-spacing:8px}
+.loader-number{margin-top:20px;font-family:"Playfair Display",serif;font-size:90px}
+.loader-line{width:220px;height:1px;margin:25px auto;background:#393433;overflow:hidden}
+.loader-line span{display:block;width:100%;height:100%;background:white;transform:translateX(-100%)}
+
+/* =========================================================
+   NAV
+========================================================= */
+.nav{position:fixed;top:0;left:0;width:100%;height:90px;padding:0 6vw;z-index:5000;display:flex;align-items:center;justify-content:space-between;mix-blend-mode:difference}
+.logo{font-size:12px;letter-spacing:7px}
+.nav-links{display:flex;align-items:center;gap:30px}
+.nav-links a{font-size:8px;letter-spacing:3px;text-transform:uppercase}
+.owner-button{border:1px solid white;background:transparent;color:white;padding:11px 17px;font-size:8px;letter-spacing:2px;cursor:pointer}
+
+/* =========================================================
+   HERO
+========================================================= */
+.hero{height:100vh;min-height:700px;position:relative;overflow:hidden;display:flex;align-items:center;background:linear-gradient(120deg,#181514 0%,#342526 45%,#795457 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:80px 80px;opacity:.5}
+.hero-photo{position:absolute;right:5vw;top:12vh;width:38vw;height:72vh;overflow:hidden;opacity:.55;transform:rotate(4deg)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(30%) contrast(105%) brightness(65%)}
+.hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#342526 0%,transparent 45%)}
+.hero-content{position:relative;z-index:5;margin-left:8vw}
+.eyebrow{margin-bottom:30px;color:#b9aaa3;font-size:8px;letter-spacing:5px}
+.hero-title{font-family:"Playfair Display",serif;font-weight:400;font-size:clamp(80px,13vw,190px);line-height:.72;letter-spacing:-8px}
+.hero-title em{color:#d3aa87}
+.hero-description{width:330px;margin-top:55px;color:#b1a49e;font-size:10px;line-height:1.9}
+.hero-side{position:absolute;z-index:5;right:8vw;bottom:10vh;width:220px;color:#b8aaa4;font-size:8px;line-height:1.8}
+.scroll-indicator{position:absolute;z-index:5;left:50%;bottom:30px;transform:translateX(-50%);color:#aaa09a;font-size:7px;letter-spacing:4px}
+
+/* =========================================================
+   ABOUT
+========================================================= */
+.about{min-height:100vh;padding:18vh 8vw;position:relative;overflow:hidden;background:var(--cream);color:#191716}
+.about-photo{position:absolute;right:7vw;top:18vh;width:280px;height:390px;overflow:hidden;transform:rotate(7deg);opacity:.9}
+.about-photo img{width:100%;height:100%;object-fit:cover;filter:saturate(.8)}
+.about-number{font-size:8px;letter-spacing:4px;color:#887b73}
+.about-title{position:relative;z-index:2;margin-top:13vh;max-width:1000px;font-family:"Playfair Display",serif;font-size:clamp(65px,10vw,150px);font-weight:400;line-height:.8;letter-spacing:-6px}
+.about-title em{color:var(--pink)}
+.about-text{position:relative;z-index:3;width:350px;margin-top:100px;margin-left:auto;color:#77706b;font-size:10px;line-height:1.9}
+
+/* =========================================================
+   STORY
+========================================================= */
+.story{height:280vh;background:#181514}
+.story-pin{position:sticky;top:0;height:100vh;overflow:hidden}
+.story-bg{position:absolute;inset:-20%;background:linear-gradient(135deg,#211b1a,#765052,#c49b87,#211b1a)}
+.story-photo{position:absolute;right:10vw;top:14vh;width:35vw;height:70vh;overflow:hidden;opacity:.75;transform:rotate(-4deg)}
+.story-photo img{width:100%;height:100%;object-fit:cover;filter:saturate(.65) contrast(105%)}
+.story-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.05))}
+.story-title{position:absolute;z-index:5;left:8vw;top:50%;transform:translateY(-50%)}
+.story-title small{color:#b9aaa3;font-size:8px;letter-spacing:5px}
+.story-title h2{margin-top:25px;font-family:"Playfair Display",serif;font-size:clamp(80px,12vw,175px);font-weight:400;line-height:.7;letter-spacing:-8px}
+.story-title h2 em{color:#d2aa83}
+.story-copy{position:absolute;z-index:5;right:8vw;bottom:10vh;width:250px;color:#b6aaa3;font-size:9px;line-height:1.8}
+
+/* =========================================================
+   VALUES
+========================================================= */
+.values{min-height:100vh;padding:15vh 8vw;background:#e5d5ca;color:#181514;overflow:hidden}
+.values-title{margin-top:40px;font-family:"Playfair Display",serif;font-size:clamp(70px,11vw,160px);font-weight:400;line-height:.72;letter-spacing:-7px}
+.values-list{margin-top:100px;border-top:1px solid rgba(0,0,0,.2)}
+.value{min-height:150px;border-bottom:1px solid rgba(0,0,0,.2);display:flex;align-items:center;justify-content:space-between;overflow:hidden;transition:.35s}
+.value:hover{padding-left:25px}
+.value-number{width:50px;font-size:8px;letter-spacing:3px}
+.value-name{width:35%;font-family:"Playfair Display",serif;font-size:42px}
+.value-description{width:250px;color:#756b65;font-size:9px;line-height:1.7}
+
+/* =========================================================
+   SERVICES
+========================================================= */
+.services{padding:16vh 8vw;background:#11100f}
+.services-top{margin-bottom:90px;display:flex;justify-content:space-between;align-items:end}
+.services-title{margin-top:40px;font-family:"Playfair Display",serif;font-weight:400;font-size:clamp(70px,10vw,145px);line-height:.7;letter-spacing:-6px}
+.services-info{width:280px;color:#827a75;font-size:9px;line-height:1.8}
+.service-list{border-top:1px solid rgba(255,255,255,.15)}
+.service{min-height:125px;border-bottom:1px solid rgba(255,255,255,.15);padding:0 20px;display:flex;align-items:center;justify-content:space-between;transition:.35s}
+.service:hover{background:#292120;padding-left:45px}
+.service-name{font-family:"Playfair Display",serif;font-size:40px}
+.service-price{color:#c09a6b;font-size:10px;letter-spacing:2px}
+
+/* =========================================================
+   3D COLLECTION
+========================================================= */
+.collection{position:relative;height:420vh;background:#11100f}
+.col-pin{position:sticky;top:0;height:100vh;overflow:hidden}
+#colCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
+#colCanvas.grabbing{cursor:grabbing}
+#colCanvas.hovering{cursor:pointer}
+.col-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(17,16,15,.85) 100%),linear-gradient(180deg,rgba(17,16,15,.7) 0%,transparent 22%,transparent 70%,rgba(17,16,15,.85) 100%)}
+.col-head{position:absolute;z-index:5;left:7vw;top:15vh;pointer-events:none;will-change:opacity,transform}
+.col-head small{color:#b9aaa3;font-size:8px;letter-spacing:5px}
+.col-head h2{margin-top:22px;font-family:"Playfair Display",serif;font-weight:400;font-size:clamp(60px,9vw,135px);line-height:.74;letter-spacing:-6px}
+.col-head h2 em{color:#d3aa87}
+.col-hud{position:absolute;z-index:5;left:7vw;bottom:9vh;max-width:330px;pointer-events:none}
+.col-count{font-size:8px;letter-spacing:4px;color:#b99561}
+.col-name{margin-top:12px;font-family:"Playfair Display",serif;font-size:clamp(30px,4vw,52px);line-height:1;transition:opacity .35s,transform .35s}
+.col-note{margin-top:12px;color:#b1a49e;font-size:10px;line-height:1.8;transition:opacity .35s,transform .35s}
+.col-hud.swap .col-name,.col-hud.swap .col-note{opacity:0;transform:translateY(10px)}
+.col-hint{position:absolute;z-index:5;right:7vw;bottom:9vh;text-align:right;color:#8f847e;font-size:8px;letter-spacing:3px;line-height:2;pointer-events:none}
+.col-progress{position:absolute;z-index:5;right:7vw;top:15vh;width:1px;height:120px;background:rgba(255,255,255,.18);pointer-events:none}
+.col-progress span{position:absolute;left:0;top:0;width:1px;height:100%;background:#d3aa87;transform-origin:top;transform:scaleY(0)}
+
+.col-viewer{position:fixed;inset:0;z-index:90000;display:flex;align-items:center;justify-content:center;padding:5vh 5vw;background:rgba(10,9,9,.94);opacity:0;pointer-events:none;transition:opacity .35s}
+.col-viewer.open{opacity:1;pointer-events:auto}
+.col-viewer figure{position:relative;max-width:min(560px,90vw);transform:scale(.94);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.col-viewer.open figure{transform:scale(1)}
+.col-viewer img{width:100%;max-height:76vh;object-fit:cover;background:#241f1e}
+.col-viewer figcaption{margin-top:18px;font-family:"Playfair Display",serif;font-size:26px}
+.col-viewer figcaption span{display:block;margin-top:8px;font-family:"DM Sans",sans-serif;font-size:10px;line-height:1.7;color:#b1a49e}
+.col-close{position:absolute;top:24px;right:24px;padding:11px 16px;border:1px solid rgba(255,255,255,.4);background:transparent;color:white;font-size:8px;letter-spacing:2px}
+.col-close:hover{background:white;color:#11100f}
+
+/* =========================================================
+   BOOKING
+========================================================= */
+.booking{padding:16vh 7vw;background:#f0e8e1;color:#171514}
+.booking-header{margin-bottom:80px;display:flex;justify-content:space-between;align-items:end}
+.booking-title{margin-top:40px;font-family:"Playfair Display",serif;font-size:clamp(70px,11vw,160px);font-weight:400;line-height:.7;letter-spacing:-7px}
+.booking-title em{color:var(--pink)}
+.booking-intro{width:280px;color:#756d67;font-size:10px;line-height:1.8}
+.booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-card{padding:45px;background:#faf7f3;border:1px solid #ddd4cd}
+.form-title{margin-bottom:35px;font-family:"Playfair Display",serif;font-size:30px}
+.field{margin-bottom:22px}
+.field label{display:block;margin-bottom:8px;color:#887c73;font-size:7px;letter-spacing:3px}
+.field input,.field select,.field textarea{width:100%;padding:12px 0;border:0;border-bottom:1px solid #cfc5be;background:transparent;outline:none;color:#171514}
+.field textarea{height:90px;resize:none}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.address-row{display:flex;gap:10px}
+.address-row input{flex:1}
+.find-location{border:0;background:#181514;color:white;padding:0 17px;font-size:7px;letter-spacing:1px}
+.find-location:disabled{opacity:.5;cursor:wait}
+.submit-booking{width:100%;margin-top:10px;padding:18px;border:0;background:#a66871;color:white;font-size:8px;letter-spacing:3px}
+.submit-booking:hover{background:#8e565f}
+
+/* CUSTOMER MAP */
+.map-wrapper{min-height:620px;position:relative;overflow:hidden;border:1px solid #d9d0ca}
+#customerMap{position:absolute;inset:0;width:100%;height:100%}
+.map-label{position:absolute;z-index:500;left:20px;top:20px;max-width:320px;padding:17px;background:white;box-shadow:0 15px 35px rgba(0,0,0,.15)}
+.map-label strong{font-family:"Playfair Display",serif;font-size:20px;font-weight:400}
+.map-label span{display:block;margin-top:6px;color:#777;font-size:8px;line-height:1.5}
+
+/* FOOTER */
+.footer{min-height:65vh;padding:12vh 7vw 30px;background:#11100f;display:flex;flex-direction:column;justify-content:space-between}
+.footer-brand{font-family:"Playfair Display",serif;font-size:clamp(80px,15vw,220px);font-weight:400;line-height:.65;letter-spacing:-10px}
+.footer-brand em{color:#c39a6c}
+.footer-bottom{padding-top:25px;border-top:1px solid rgba(255,255,255,.15);display:flex;justify-content:space-between;color:#6f6863;font-size:8px;letter-spacing:2px}
+
+/* =========================================================
+   OWNER DASHBOARD
+========================================================= */
+.owner-dashboard{position:fixed;inset:0;z-index:70000;display:none;overflow:auto;background:#f3f3f1;color:#151515}
+.owner-dashboard.active{display:block}
+.owner-nav{position:sticky;top:0;z-index:100;height:75px;padding:0 35px;border-bottom:1px solid #dededb;background:white;display:flex;align-items:center;justify-content:space-between}
+.owner-logo{font-size:11px;font-weight:600;letter-spacing:5px}
+.owner-nav-right{display:flex;align-items:center;gap:12px}
+.owner-online{padding:8px 13px;border-radius:20px;background:#eaf6ed;color:#347145;font-size:7px}
+.close-owner{padding:10px 15px;border:1px solid #d5d5d2;background:white;font-size:8px}
+.close-owner:hover{background:#151515;color:white}
+.owner-content{max-width:1750px;margin:auto;padding:40px}
+.owner-heading{display:flex;align-items:end;justify-content:space-between}
+.owner-heading h1{font-family:"Playfair Display",serif;font-size:65px;font-weight:400;line-height:.8}
+.owner-heading p{margin-top:15px;color:#777;font-size:9px}
+.export-excel{padding:13px 18px;border:0;background:#197c43;color:white;font-size:8px;letter-spacing:1px}
+.export-excel:hover{background:#126434}
+
+/* STATS */
+.stats{margin-top:45px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.stat{padding:22px;border:1px solid #e0e0dd;border-radius:4px;background:white}
+.stat small{color:#888;font-size:7px;letter-spacing:2px}
+.stat strong{display:block;margin-top:15px;font-family:"Playfair Display",serif;font-size:34px;font-weight:400}
+
+/* OWNER GRID */
+.owner-grid{margin-top:25px;display:grid;grid-template-columns:1.45fr .8fr;gap:18px}
+.owner-panel{overflow:hidden;border:1px solid #e0e0dd;border-radius:4px;background:white}
+.panel-heading{min-height:70px;padding:18px 22px;border-bottom:1px solid #e7e7e4;display:flex;align-items:center;justify-content:space-between}
+.panel-heading h3{font-size:13px}
+.search-bookings{width:240px;padding:10px;border:1px solid #ddd;outline:none;background:#fafafa;font-size:9px}
+
+/* TABLE */
+.table-scroll{overflow:auto}
+.booking-table{width:100%;min-width:900px;border-collapse:collapse}
+.booking-table th{padding:14px 18px;border-bottom:1px solid #e7e7e4;background:#fafafa;color:#888;text-align:left;font-size:7px;letter-spacing:1px}
+.booking-table td{padding:16px 18px;border-bottom:1px solid #ededeb;vertical-align:middle;font-size:9px}
+.booking-table tr:hover{background:#fafafa}
+.customer-name{font-weight:600}
+.customer-email{display:block;margin-top:4px;color:#999;font-size:7px}
+.view-details{padding:8px 11px;border:1px solid #d5d5d2;background:white;font-size:7px;letter-spacing:1px}
+.view-details:hover{background:#181818;color:white}
+
+/* BADGES */
+.badge{display:inline-block;padding:6px 9px;border-radius:20px;font-size:7px;white-space:nowrap}
+.badge-pending{background:#fff3dc;color:#9a6b1b}
+.badge-confirmed{background:#eaf6ed;color:#347145}
+.badge-completed{background:#edf0f2;color:#596770}
+.badge-cancelled{background:#fdeaea;color:#a34a4a}
+.badge-unpaid{background:#fff0ef;color:#a24b4b}
+.badge-partial{background:#fff4dc;color:#9a701d}
+.badge-paid{background:#eaf6ed;color:#347145}
+
+/* DETAILS */
+.details-panel{padding:25px;min-height:650px;overflow:auto}
+.details-empty{min-height:550px;display:flex;align-items:center;justify-content:center;text-align:center;color:#aaa;font-size:9px}
+.details-header{display:flex;align-items:start;justify-content:space-between;gap:10px}
+.details-name{font-family:"Playfair Display",serif;font-size:35px;font-weight:400}
+.detail-section{margin-top:25px}
+.detail-label{margin-bottom:7px;color:#999;font-size:7px;letter-spacing:2px}
+.detail-value{font-size:10px;line-height:1.7}
+.detail-note{padding:14px;border:1px solid #eee7e0;background:#faf8f5;font-size:9px;line-height:1.7}
+
+/* PAYMENT */
+.payment-box{padding:15px;border:1px solid #e2e5e0;background:#f7f8f6}
+.amount{font-family:"Playfair Display",serif;font-size:30px}
+.payment-select{width:100%;margin-top:10px;padding:10px;border:1px solid #ddd;background:white;font-size:9px}
+.save-payment{width:100%;margin-top:8px;padding:11px;border:0;background:#181818;color:white;font-size:7px;letter-spacing:1px}
+
+/* OWNER MAP */
+.owner-map{height:230px;position:relative;overflow:hidden;border:1px solid #ddd;background:#eee}
+.owner-map-inner{position:absolute;inset:0}
+.owner-no-location{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;background:#f5f5f3;color:#888;font-size:9px}
+
+/* NOTES */
+.owner-note{width:100%;height:80px;padding:12px;border:1px solid #ddd;outline:none;resize:none;font-size:9px}
+.save-note{width:100%;margin-top:7px;padding:11px;border:0;background:#181818;color:white;font-size:7px}
+
+/* ACTIONS */
+.status-actions{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.status-actions button{padding:11px;border:0;font-size:7px}
+.action-confirm{background:#eaf6ed;color:#347145}
+.action-complete{background:#edf0f2;color:#596770}
+.action-cancel{background:#fdeaea;color:#a34a4a}
+.action-delete{background:#181818;color:white}
+
+/* TOAST */
+.toast{position:fixed;right:25px;bottom:25px;z-index:1000000;padding:15px 20px;background:#171514;color:white;font-size:8px;opacity:0;transform:translateY(30px);pointer-events:none;transition:.3s}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* =========================================================
+   RESPONSIVE / MOBILE
+========================================================= */
+@media (max-width:1100px){
+    .stats{grid-template-columns:repeat(3,1fr)}
+    .owner-grid{grid-template-columns:1fr}
+    .booking-grid{grid-template-columns:1fr}
+    .hero-photo{width:45vw;right:-5vw}
+    .about-photo{right:3vw}
+    .story-photo{width:45vw;right:3vw}
+}
+
+@media (max-width:800px){
+    .nav{height:70px;padding:0 20px}
+    .logo{font-size:10px;letter-spacing:5px}
+    .nav-links{gap:8px}
+    .nav-links a{display:none}
+    .hero{min-height:700px;height:100svh}
+    .hero-photo{width:70vw;height:65vh;right:-25vw;top:15vh;opacity:.28}
+    .hero-content{margin-left:7vw;max-width:85vw}
+    .eyebrow{font-size:7px;letter-spacing:3px;margin-bottom:25px}
+    .hero-title{font-size:clamp(58px,17vw,105px);letter-spacing:-5px;line-height:.78}
+    .hero-description{width:min(290px,75vw);margin-top:40px;font-size:9px}
+    .hero-side{display:none}
+    .scroll-indicator{bottom:20px;font-size:6px}
+
+    .about{min-height:auto;padding:110px 7vw}
+    .about-photo{width:180px;height:250px;right:-30px;top:100px;opacity:.18}
+    .about-title{max-width:90vw;margin-top:70px;font-size:clamp(55px,14vw,100px);letter-spacing:-4px;line-height:.82}
+    .about-text{width:100%;max-width:430px;margin-top:70px;font-size:9px}
+
+    .story{height:230vh}
+    .story-photo{width:75vw;height:65vh;right:-25vw;top:18vh;opacity:.25}
+    .story-title{left:7vw;right:7vw}
+    .story-title h2{font-size:clamp(60px,16vw,110px);letter-spacing:-5px}
+    .story-copy{right:7vw;bottom:8vh;width:min(260px,70vw);font-size:8px}
+
+    .values{min-height:auto;padding:110px 7vw}
+    .values-title{font-size:clamp(58px,15vw,105px);letter-spacing:-5px}
+    .values-list{margin-top:70px}
+    .value{min-height:150px;display:grid;grid-template-columns:40px 1fr;gap:10px;padding:25px 0}
+    .value-number{width:auto}
+    .value-name{width:auto;font-size:30px}
+    .value-description{grid-column:2;width:auto;max-width:400px;font-size:8px}
+
+    .services{padding:110px 7vw}
+    .services-top{display:block;margin-bottom:60px}
+    .services-title{font-size:clamp(60px,15vw,105px);letter-spacing:-5px}
+    .services-info{width:100%;max-width:350px;margin-top:35px}
+    .service{min-height:100px;padding:20px 5px;gap:20px}
+    .service:hover{padding-left:15px}
+    .service-name{font-size:clamp(23px,7vw,35px);line-height:1}
+    .service-price{flex-shrink:0;font-size:8px}
+
+    .collection{height:380vh}
+    .col-head{left:6vw;top:12vh}
+    .col-head h2{letter-spacing:-4px}
+    .col-hud{left:6vw;bottom:7vh;max-width:78vw}
+    .col-hint{display:none}
+    .col-progress{right:6vw;top:12vh;height:80px}
+
+    .booking{padding:110px 6vw}
+    .booking-header{display:block;margin-bottom:60px}
+    .booking-title{font-size:clamp(60px,15vw,105px);letter-spacing:-5px}
+    .booking-intro{width:100%;max-width:350px;margin-top:35px}
+    .booking-grid{grid-template-columns:1fr;gap:15px}
+    .form-card{padding:25px 20px}
+    .form-title{font-size:26px;margin-bottom:30px}
+    .form-row{grid-template-columns:1fr;gap:0}
+    .field{margin-bottom:20px}
+    .field input,.field select,.field textarea{font-size:14px}
+    .address-row{display:flex;flex-direction:column;gap:8px}
+    .address-row input{width:100%}
+    .find-location{width:100%;height:44px;padding:0}
+    .submit-booking{min-height:50px;font-size:7px}
+    .map-wrapper{min-height:400px;height:400px}
+    .map-label{left:12px;top:12px;right:12px;max-width:none;padding:13px}
+    .map-label strong{font-size:17px}
+
+    .footer{min-height:55vh;padding:100px 7vw 25px}
+    .footer-brand{font-size:clamp(65px,18vw,110px);letter-spacing:-5px}
+    .footer-bottom{display:block}
+    .footer-bottom div{margin-top:10px;font-size:7px}
+
+    .owner-nav{height:65px;padding:0 15px}
+    .owner-logo{font-size:8px;letter-spacing:3px}
+    .owner-online{display:none}
+    .close-owner{padding:9px 11px;font-size:7px}
+    .owner-content{padding:25px 15px 50px}
+    .owner-heading{display:block}
+    .owner-heading h1{font-size:clamp(45px,13vw,65px)}
+    .owner-heading p{max-width:300px;line-height:1.6}
+    .export-excel{margin-top:25px;width:100%;min-height:45px}
+    .stats{grid-template-columns:1fr 1fr;gap:8px;margin-top:30px}
+    .stat{padding:16px}
+    .stat strong{font-size:27px}
+    .owner-grid{grid-template-columns:1fr;gap:12px}
+    .panel-heading{padding:16px}
+    .panel-heading h3{font-size:11px}
+    .search-bookings{width:100%;margin-top:12px}
+    .table-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .booking-table{min-width:850px}
+    .booking-table th,.booking-table td{padding:13px 12px}
+    .details-panel{min-height:auto;padding:20px}
+    .details-name{font-size:30px}
+    .owner-map{height:260px}
+}
+
+@media (max-width:600px){
+    html,body{width:100%;overflow-x:hidden}
+    .nav{height:64px;padding:0 16px}
+    .logo{font-size:9px;letter-spacing:4px}
+    .owner-button{padding:8px 10px;font-size:6px}
+
+    .hero{min-height:650px}
+    .hero-content{margin-left:6vw;padding-right:20px}
+    .hero-title{font-size:clamp(52px,17vw,78px);letter-spacing:-4px}
+    .hero-description{width:min(270px,78vw);margin-top:35px;font-size:9px;line-height:1.8}
+    .hero-photo{width:90vw;height:60vh;right:-45vw;top:20vh;opacity:.2}
+
+    .about{padding:90px 6vw}
+    .about-photo{width:150px;height:210px;right:-35px;top:80px}
+    .about-title{margin-top:60px;font-size:clamp(50px,15vw,72px);letter-spacing:-3px}
+    .about-text{margin-top:60px;font-size:9px;line-height:1.8}
+
+    .story{height:210vh}
+    .story-photo{width:90vw;height:55vh;right:-45vw;top:20vh}
+    .story-title{left:6vw}
+    .story-title h2{font-size:clamp(55px,16vw,75px);letter-spacing:-4px}
+    .story-copy{left:6vw;right:auto;bottom:8vh;width:75vw}
+
+    .values{padding:90px 6vw}
+    .values-title{font-size:clamp(52px,15vw,72px);letter-spacing:-4px}
+    .value{min-height:145px;grid-template-columns:32px 1fr}
+    .value-name{font-size:27px}
+
+    .services{padding:90px 6vw}
+    .services-title{font-size:clamp(52px,15vw,75px);letter-spacing:-4px}
+    .service{min-height:90px;padding:18px 0}
+    .service-name{font-size:24px}
+    .service-price{font-size:7px}
+
+    .booking{padding:90px 5vw}
+    .booking-title{font-size:clamp(52px,15vw,75px);letter-spacing:-4px}
+    .form-card{padding:22px 18px}
+    .form-title{font-size:24px}
+    .field label{font-size:6px;letter-spacing:2px}
+    .field input,.field select,.field textarea{font-size:16px !important}
+    .field textarea{height:100px}
+    .map-wrapper{height:360px;min-height:360px}
+    .map-label{padding:11px}
+    .map-label strong{font-size:15px}
+
+    .footer{min-height:50vh;padding:80px 6vw 25px}
+    .footer-brand{font-size:clamp(60px,19vw,90px)}
+
+    .owner-nav{padding:0 12px}
+    .owner-logo{font-size:7px;letter-spacing:2px}
+    .close-owner{padding:8px 9px}
+    .owner-content{padding:20px 12px 40px}
+    .owner-heading h1{font-size:45px}
+    .stats{grid-template-columns:1fr 1fr}
+    .stat{padding:14px}
+    .stat small{font-size:6px}
+    .stat strong{font-size:24px}
+    .panel-heading{padding:14px}
+    .details-panel{padding:18px}
+    .details-name{font-size:27px}
+    .owner-map{height:230px}
+    .status-actions{grid-template-columns:1fr}
+}
+
+@media (max-width:420px){
+    .hero{min-height:620px}
+    .hero-title{font-size:52px;letter-spacing:-3px}
+    .hero-description{width:240px}
+    .about-title,.values-title,.services-title,.booking-title{font-size:52px;letter-spacing:-3px}
+    .service{align-items:flex-start;flex-direction:column;gap:8px}
+    .service-price{font-size:8px}
+    .stats{grid-template-columns:1fr}
+    .owner-heading h1{font-size:42px}
+    .booking-table{min-width:820px}
+    .footer-brand{font-size:60px}
+}
+
+/* Prevent long text from breaking mobile layouts */
+.hero-description,.about-text,.story-copy,.services-info,.booking-intro,.value-description,.detail-value,.detail-note{overflow-wrap:anywhere}
+
+/* Leaflet mobile fix */
+.leaflet-container{width:100%;max-width:100%}
+.leaflet-control{font-size:11px}
+
+/* Prevent mobile browser zoom on form controls */
+@media (max-width:600px){
+    input,select,textarea{font-size:16px !important}
+    button{-webkit-tap-highlight-color:transparent}
+}
+
+@media (prefers-reduced-motion:reduce){
+    .col-viewer,.col-viewer figure{transition:none}
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+    <div class="loader-content">
+        <div class="loader-brand">LUMÉA</div>
+        <div class="loader-number" id="loaderNumber">00</div>
+        <div class="loader-line"><span id="loaderBar"></span></div>
+    </div>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+    <a href="#" class="logo">LUMÉA</a>
+    <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#collection">Collection</a>
+        <a href="#booking">Appointment</a>
+        <button type="button" class="owner-button" id="openOwner">OWNER</button>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-grid"></div>
+
+    <div class="hero-photo">
+        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85" alt="Beauty makeup">
+    </div>
+
+    <div class="hero-content">
+        <div class="eyebrow">BEAUTY STUDIO / MAKEUP ARTISTRY</div>
+        <h1 class="hero-title">YOUR<br><em>SIGNATURE.</em></h1>
+        <p class="hero-description">
+            Professional makeup artistry for celebrations, special occasions and everyday beauty.
+        </p>
+    </div>
+
+    <div class="hero-side">
+        LUMÉA BEAUTY STUDIO
+        <br><br>
+        Makeup designed around your personality, style and occasion.
+    </div>
+
+    <div class="scroll-indicator">SCROLL DOWN</div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+    <div class="about-photo">
+        <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=800&q=85" alt="Beauty products">
+    </div>
+
+    <div class="about-number">01 / ABOUT LUMÉA</div>
+
+    <h2 class="about-title">Simple.<br>Elegant.<br><em>Yours.</em></h2>
+
+    <p class="about-text">
+        LUMÉA is a modern beauty studio focused on clean artistry and personalized makeup.
+        <br><br>
+        Every appointment is adjusted according to the customer's preferred style, features and occasion.
+    </p>
+</section>
+
+<!-- SCROLL STORY -->
+<section class="story">
+    <div class="story-pin">
+        <div class="story-bg" id="storyBackground"></div>
+
+        <div class="story-photo">
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&q=85" alt="Makeup cosmetics">
+        </div>
+
+        <div class="story-overlay"></div>
+
+        <div class="story-title">
+            <small>02 / OUR APPROACH</small>
+            <h2>MADE<br><em>FOR YOU.</em></h2>
+        </div>
+
+        <div class="story-copy">
+            Every appointment starts with understanding what you want.
+            <br><br>
+            Then we build the look around you.
+        </div>
+    </div>
+</section>
+
+<!-- VALUES -->
+<section class="values">
+    <div class="about-number">03 / WHAT WE VALUE</div>
+
+    <h2 class="values-title">BEAUTY<br>WITH<br>PURPOSE.</h2>
+
+    <div class="values-list">
+        <div class="value">
+            <div class="value-number">01</div>
+            <div class="value-name">Personal</div>
+            <div class="value-description">Every appointment is customized around your preferences.</div>
+        </div>
+        <div class="value">
+            <div class="value-number">02</div>
+            <div class="value-name">Professional</div>
+            <div class="value-description">Quality products, clean techniques and detailed application.</div>
+        </div>
+        <div class="value">
+            <div class="value-number">03</div>
+            <div class="value-name">Memorable</div>
+            <div class="value-description">Your appointment should feel as good as the final result.</div>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+    <div class="services-top">
+        <div>
+            <div class="about-number">04 / SERVICES</div>
+            <h2 class="services-title">FIND<br>YOUR LOOK.</h2>
+        </div>
+
+        <p class="services-info">
+            Choose the service that matches your occasion.
+            <br><br>
+            Prices are automatically included in the booking management system.
+        </p>
+    </div>
+
+    <div class="service-list">
+        <div class="service"><div class="service-name">Soft Glam</div><div class="service-price">₱1,200</div></div>
+        <div class="service"><div class="service-name">Full Glam</div><div class="service-price">₱1,800</div></div>
+        <div class="service"><div class="service-name">Bridal Makeup</div><div class="service-price">₱3,500</div></div>
+        <div class="service"><div class="service-name">Editorial Makeup</div><div class="service-price">₱2,500</div></div>
+        <div class="service"><div class="service-name">Makeup Consultation</div><div class="service-price">₱500</div></div>
+    </div>
+</section>
+
+<!-- 3D COLLECTION -->
+<section class="collection" id="collection">
+    <div class="col-pin">
+        <canvas id="colCanvas" aria-label="3D gallery of LUMÉA makeup looks"></canvas>
+        <div class="col-vignette"></div>
+
+        <div class="col-head" id="colHead">
+            <small>05 / THE COLLECTION</small>
+            <h2>OUR<br><em>LOOKS.</em></h2>
+        </div>
+
+        <div class="col-progress"><span id="colProgress"></span></div>
+
+        <div class="col-hud" id="colHud">
+            <div class="col-count" id="colCount"></div>
+            <div class="col-name" id="colName"></div>
+            <div class="col-note" id="colNote"></div>
+        </div>
+
+        <div class="col-hint">
+            SCROLL OR DRAG TO TURN
+            <br>
+            CLICK A LOOK TO OPEN
+        </div>
+    </div>
+</section>
+
+<!-- COLLECTION VIEWER -->
+<div class="col-viewer" id="colViewer">
+    <button type="button" class="col-close" id="colClose">CLOSE</button>
+    <figure>
+        <img id="colViewerImg" alt="">
+        <figcaption id="colViewerCap"></figcaption>
+    </figure>
+</div>
+
+<!-- BOOKING -->
+<section class="booking" id="booking">
+    <div class="booking-header">
+        <div>
+            <div class="about-number">06 / APPOINTMENT</div>
+            <h2 class="booking-title">BOOK<br><em>YOUR LOOK.</em></h2>
+        </div>
+
+        <p class="booking-intro">
+            Choose your preferred service, date and time.
+            <br><br>
+            Add your address so the owner can view your appointment location on the map.
+        </p>
+    </div>
+
+    <div class="booking-grid">
+
+        <form class="form-card" id="bookingForm">
+            <div class="form-title">Appointment Details</div>
+
+            <div class="field">
+                <label>FULL NAME</label>
+                <input id="customerName" required placeholder="Juan Dela Cruz">
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label>EMAIL</label>
+                    <input id="customerEmail" type="email" required placeholder="email@example.com">
+                </div>
+                <div class="field">
+                    <label>PHONE</label>
+                    <input id="customerPhone" type="tel" required placeholder="09XXXXXXXXX">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>SERVICE</label>
+                <select id="bookingService" required>
+                    <option value="">Select service</option>
+                    <option value="Soft Glam">Soft Glam — ₱1,200</option>
+                    <option value="Full Glam">Full Glam — ₱1,800</option>
+                    <option value="Bridal Makeup">Bridal Makeup — ₱3,500</option>
+                    <option value="Editorial Makeup">Editorial Makeup — ₱2,500</option>
+                    <option value="Makeup Consultation">Makeup Consultation — ₱500</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label>DATE</label>
+                    <input id="bookingDate" type="date" required>
+                </div>
+                <div class="field">
+                    <label>TIME</label>
+                    <input id="bookingTime" type="time" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>ADDRESS</label>
+                <div class="address-row">
+                    <input id="customerAddress" required placeholder="Complete address">
+                    <button type="button" class="find-location" id="findCustomerLocation">FIND MAP</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>CUSTOMER NOTES</label>
+                <textarea id="customerNotes" placeholder="Special requests or details..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-booking">SEND APPOINTMENT REQUEST</button>
+        </form>
+
+        <div class="map-wrapper">
+            <div class="map-label">
+                <strong>Appointment Location</strong>
+                <span id="customerMapStatus">Enter your address and click FIND MAP.</span>
+            </div>
+            <div id="customerMap"></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-brand">LUMÉA<br><em>BEAUTY.</em></div>
+    <div class="footer-bottom">
+        <div>© 2026 LUMÉA BEAUTY STUDIO</div>
+        <div>MAKEUP / BEAUTY / ARTISTRY</div>
+    </div>
+</footer>
+
+<!-- OWNER DASHBOARD -->
+<div class="owner-dashboard" id="ownerDashboard">
+
+    <div class="owner-nav">
+        <div class="owner-logo">LUMÉA / OWNER MANAGEMENT</div>
+        <div class="owner-nav-right">
+            <div class="owner-online">● MANAGEMENT</div>
+            <button type="button" class="close-owner" id="closeOwner">CLOSE</button>
+        </div>
+    </div>
+
+    <div class="owner-content">
+
+        <div class="owner-heading">
+            <div>
+                <h1>Bookings.</h1>
+                <p>Manage appointments, customers, payments and locations.</p>
+            </div>
+            <button type="button" class="export-excel" id="exportExcel">EXPORT TO EXCEL</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><small>TOTAL BOOKINGS</small><strong id="statTotal">0</strong></div>
+            <div class="stat"><small>PENDING</small><strong id="statPending">0</strong></div>
+            <div class="stat"><small>CONFIRMED</small><strong id="statConfirmed">0</strong></div>
+            <div class="stat"><small>COMPLETED</small><strong id="statCompleted">0</strong></div>
+            <div class="stat"><small>PAID</small><strong id="statPaid">₱0</strong></div>
+            <div class="stat"><small>PENDING PAYMENT</small><strong id="statUnpaid">₱0</strong></div>
+        </div>
+
+        <div class="owner-grid">
+
+            <div class="owner-panel">
+                <div class="panel-heading">
+                    <h3>Customer Booking List</h3>
+                    <input type="search" id="bookingSearch" class="search-bookings" placeholder="Search customer...">
+                </div>
+
+                <div class="table-scroll">
+                    <table class="booking-table">
+                        <thead>
+                            <tr>
+                                <th>CUSTOMER</th>
+                                <th>SERVICE</th>
+                                <th>APPOINTMENT</th>
+                                <th>AMOUNT</th>
+                                <th>STATUS</th>
+                                <th>PAYMENT</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="owner-panel">
+                <div id="detailsContainer" class="details-panel">
+                    <div class="details-empty">Select a booking to view details.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Saved.</div>
+
+
+<script>
+
+/* =========================================================
+   GSAP
+========================================================= */
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* LOADER */
+
+const loaderProgress = {value:0};
+
+gsap.to(loaderProgress,{
+    value:100,
+    duration:1.5,
+    ease:"power2.out",
+    onUpdate(){
+        document.getElementById("loaderNumber").textContent =
+            Math.round(loaderProgress.value).toString().padStart(2,"0");
+    }
+});
+
+gsap.to("#loaderBar",{x:"0%",duration:1.5,ease:"power3.inOut"});
+
+gsap.to("#loader",{yPercent:-100,duration:1,delay:1.7,ease:"power4.inOut"});
+
+
+/* HERO SCROLL */
+
+gsap.timeline({
+    scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:1}
+})
+.to(".hero-grid",{scale:2,rotation:5,opacity:0})
+.to(".hero-content",{y:-350,opacity:0,scale:.75},0)
+.to(".hero-photo",{scale:1.3,rotation:-8,x:-100,opacity:.15},0)
+.to(".hero-side",{x:250,opacity:0},0);
+
+
+/* ABOUT */
+
+gsap.from(".about-title",{
+    y:180,opacity:0,scale:.85,duration:1.3,ease:"power4.out",
+    scrollTrigger:{trigger:".about",start:"top 70%"}
+});
+
+gsap.from(".about-photo",{
+    y:180,rotation:20,opacity:0,duration:1.2,
+    scrollTrigger:{trigger:".about",start:"top 60%"}
+});
+
+gsap.from(".about-text",{
+    y:100,opacity:0,
+    scrollTrigger:{trigger:".about",start:"top 45%"}
+});
+
+
+/* STORY */
+
+const storyTimeline = gsap.timeline({
+    scrollTrigger:{trigger:".story",start:"top top",end:"bottom bottom",scrub:1}
+});
+
+storyTimeline
+.to("#storyBackground",{scale:1.8,rotation:8,x:"-10vw"})
+.to(".story-photo",{scale:1.35,rotation:8,x:"-15vw"},0)
+.to(".story-title",{x:"35vw",scale:.65,opacity:0},0)
+.to(".story-copy",{x:"-25vw",opacity:0},.2);
+
+
+/* VALUES */
+
+gsap.utils.toArray(".value").forEach((item,index)=>{
+    gsap.from(item,{
+        x:index % 2 === 0 ? -120 : 120,
+        opacity:0,
+        duration:1,
+        scrollTrigger:{trigger:item,start:"top 85%"}
+    });
+});
+
+
+/* SERVICES */
+
+gsap.utils.toArray(".service").forEach((item,index)=>{
+    gsap.from(item,{
+        x:index % 2 === 0 ? -100 : 100,
+        opacity:0,
+        duration:.8,
+        scrollTrigger:{trigger:item,start:"top 85%"}
+    });
+});
+
+
+/* BOOKING ANIMATION */
+
+gsap.from(".form-card",{
+    x:-100,opacity:0,duration:1,
+    scrollTrigger:{trigger:".booking",start:"top 70%"}
+});
+
+gsap.from(".map-wrapper",{
+    x:100,opacity:0,duration:1,
+    scrollTrigger:{trigger:".booking",start:"top 70%"}
+});
+
+
+/* =========================================================
+   MAP VARIABLES
+========================================================= */
+
+let customerMap = null;
+let customerMarker = null;
+let ownerMap = null;
+let ownerMarker = null;
+
+
+/* CUSTOMER MAP INIT */
+
+function initCustomerMap(){
+
+    if(customerMap){return;}
+
+    customerMap = L.map("customerMap",{zoomControl:true}).setView([14.17,121.24],13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+        attribution:"&copy; OpenStreetMap contributors",
+        maxZoom:19
+    }).addTo(customerMap);
+
+    setTimeout(()=>{customerMap.invalidateSize();},300);
+}
+
+initCustomerMap();
+
+
+/* =========================================================
+   ADDRESS GEOCODING
+========================================================= */
+
+async function findAddressLocation(){
+
+    const addressInput = document.getElementById("customerAddress");
+    const address = addressInput.value.trim();
+
+    if(!address){
+        showToast("Please enter an address first.");
+        addressInput.focus();
+        return null;
+    }
+
+    const button = document.getElementById("findCustomerLocation");
+    const status = document.getElementById("customerMapStatus");
+
+    button.disabled = true;
+    button.textContent = "SEARCHING...";
+    status.textContent = "Searching the map for this address...";
+
+    try{
+
+        const params = new URLSearchParams({
+            q:address,
+            format:"json",
+            addressdetails:"1",
+            limit:"1"
+        });
+
+        const response = await fetch(
+            "https://nominatim.openstreetmap.org/search?" + params.toString(),
+            {method:"GET",headers:{"Accept":"application/json"}}
+        );
+
+        if(!response.ok){
+            throw new Error("Map service error");
+        }
+
+        const results = await response.json();
+
+        if(!Array.isArray(results) || results.length === 0){
+            status.textContent = "Address was not found. Try adding barangay, municipality or province.";
+            showToast("Address not found.");
+            return null;
+        }
+
+        const result = results[0];
+        const lat = Number(result.lat);
+        const lng = Number(result.lon);
+
+        if(!Number.isFinite(lat) || !Number.isFinite(lng)){
+            throw new Error("Invalid coordinates");
+        }
+
+        addressInput.dataset.lat = lat;
+        addressInput.dataset.lng = lng;
+        addressInput.dataset.location = result.display_name;
+
+        customerMap.invalidateSize();
+        customerMap.flyTo([lat,lng],17,{duration:1.2});
+
+        if(customerMarker){
+            customerMap.removeLayer(customerMarker);
+        }
+
+        customerMarker = L.marker([lat,lng]).addTo(customerMap);
+
+        customerMarker
+            .bindPopup(`<strong>Appointment Location</strong><br>${escapeHTML(result.display_name)}`)
+            .openPopup();
+
+        status.textContent = "Location found: " + result.display_name;
+        showToast("Map location found.");
+
+        return {lat,lng,location:result.display_name};
+
+    }
+    catch(error){
+        console.error("Address search error:",error);
+        status.textContent = "Unable to search the map. Check your internet connection.";
+        showToast("Map search failed.");
+        return null;
+    }
+    finally{
+        button.disabled = false;
+        button.textContent = "FIND MAP";
+    }
+}
+
+document.getElementById("findCustomerLocation").addEventListener("click",findAddressLocation);
+
+
+/* =========================================================
+   SERVICE PRICES
+========================================================= */
+
+const SERVICE_PRICES = {
+    "Soft Glam":1200,
+    "Full Glam":1800,
+    "Bridal Makeup":3500,
+    "Editorial Makeup":2500,
+    "Makeup Consultation":500
+};
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+const STORAGE_KEY = "lumeaBookings";
+
+function getBookings(){
+    try{
+        const data = localStorage.getItem(STORAGE_KEY);
+        if(!data){return [];}
+        const parsed = JSON.parse(data);
+        return Array.isArray(parsed) ? parsed : [];
+    }
+    catch(error){
+        console.error(error);
+        return [];
+    }
+}
+
+function saveBookings(bookings){
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(bookings));
+}
+
+
+/* =========================================================
+   BOOKING FORM
+========================================================= */
+
+document.getElementById("bookingForm").addEventListener("submit",async event=>{
+
+    event.preventDefault();
+
+    const addressInput = document.getElementById("customerAddress");
+
+    /* If user didn't click FIND MAP, try automatically. */
+    if(!addressInput.dataset.lat || !addressInput.dataset.lng){
+
+        const found = await findAddressLocation();
+
+        if(!found){
+            showToast("Please find your address on the map first.");
+            return;
+        }
+    }
+
+    const service = document.getElementById("bookingService").value;
+
+    const booking = {
+        id:Date.now(),
+        name:document.getElementById("customerName").value.trim(),
+        email:document.getElementById("customerEmail").value.trim(),
+        phone:document.getElementById("customerPhone").value.trim(),
+        service:service,
+        date:document.getElementById("bookingDate").value,
+        time:document.getElementById("bookingTime").value,
+        address:addressInput.value.trim(),
+        location:addressInput.dataset.location || addressInput.value.trim(),
+        lat:addressInput.dataset.lat,
+        lng:addressInput.dataset.lng,
+        customerNotes:document.getElementById("customerNotes").value.trim(),
+        ownerNotes:"",
+        amount:SERVICE_PRICES[service] || 0,
+        bookingStatus:"Pending",
+        paymentStatus:"Unpaid",
+        createdAt:new Date().toISOString()
+    };
+
+    const bookings = getBookings();
+    bookings.push(booking);
+    saveBookings(bookings);
+
+    event.target.reset();
+
+    addressInput.dataset.lat = "";
+    addressInput.dataset.lng = "";
+    addressInput.dataset.location = "";
+
+    if(customerMarker){
+        customerMap.removeLayer(customerMarker);
+        customerMarker = null;
+    }
+
+    document.getElementById("customerMapStatus").textContent = "Appointment sent successfully.";
+
+    showToast("Appointment request sent.");
+});
+
+
+/* DATE MIN */
+
+document.getElementById("bookingDate").min = new Date().toISOString().split("T")[0];
+
+
+/* =========================================================
+   OPEN / CLOSE OWNER
+========================================================= */
+
+document.getElementById("openOwner").addEventListener("click",()=>{
+
+    document.getElementById("ownerDashboard").classList.add("active");
+    document.body.classList.add("owner-open");
+
+    renderOwner();
+
+    setTimeout(()=>{ScrollTrigger.refresh();},100);
+});
+
+document.getElementById("closeOwner").addEventListener("click",()=>{
+    document.getElementById("ownerDashboard").classList.remove("active");
+    document.body.classList.remove("owner-open");
+});
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+    const bookings = getBookings();
+
+    const paid = bookings
+        .filter(b => b.paymentStatus === "Paid")
+        .reduce((sum,b)=> sum + Number(b.amount || 0),0);
+
+    const unpaid = bookings
+        .filter(b => b.paymentStatus !== "Paid")
+        .reduce((sum,b)=> sum + Number(b.amount || 0),0);
+
+    document.getElementById("statTotal").textContent = bookings.length;
+    document.getElementById("statPending").textContent = bookings.filter(b => b.bookingStatus === "Pending").length;
+    document.getElementById("statConfirmed").textContent = bookings.filter(b => b.bookingStatus === "Confirmed").length;
+    document.getElementById("statCompleted").textContent = bookings.filter(b => b.bookingStatus === "Completed").length;
+    document.getElementById("statPaid").textContent = money(paid);
+    document.getElementById("statUnpaid").textContent = money(unpaid);
+}
+
+
+/* =========================================================
+   RENDER OWNER
+========================================================= */
+
+function renderOwner(){
+
+    updateStats();
+
+    const search = document.getElementById("bookingSearch").value.toLowerCase().trim();
+
+    let bookings = getBookings();
+
+    if(search){
+        bookings = bookings.filter(booking=>{
+            const searchable = [
+                booking.name,
+                booking.email,
+                booking.phone,
+                booking.service,
+                booking.address,
+                booking.bookingStatus,
+                booking.paymentStatus
+            ].join(" ").toLowerCase();
+
+            return searchable.includes(search);
+        });
+    }
+
+    bookings.sort((a,b)=> Number(b.id) - Number(a.id));
+
+    const tbody = document.getElementById("bookingTableBody");
+
+    if(!bookings.length){
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center;padding:70px;color:#999;">
+                    No customer bookings yet.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = bookings.map(booking=>`
+
+        <tr>
+            <td>
+                <div class="customer-name">${escapeHTML(booking.name)}</div>
+                <span class="customer-email">${escapeHTML(booking.email)}</span>
+            </td>
+
+            <td>${escapeHTML(booking.service)}</td>
+
+            <td>
+                ${formatDate(booking.date)}
+                <br>
+                ${escapeHTML(booking.time)}
+            </td>
+
+            <td><strong>${money(booking.amount)}</strong></td>
+
+            <td>
+                <span class="badge ${bookingStatusClass(booking.bookingStatus)}">
+                    ${escapeHTML(booking.bookingStatus)}
+                </span>
+            </td>
+
+            <td>
+                <span class="badge ${paymentStatusClass(booking.paymentStatus)}">
+                    ${escapeHTML(booking.paymentStatus)}
+                </span>
+            </td>
+
+            <td>
+                <button type="button" class="view-details" onclick="viewBooking(${booking.id})">
+                    VIEW DETAILS
+                </button>
+            </td>
+        </tr>
+
+    `).join("");
+}
+
+
+/* =========================================================
+   VIEW BOOKING DETAILS
+========================================================= */
+
+function viewBooking(id){
+
+    const booking = getBookings().find(b => Number(b.id) === Number(id));
+
+    if(!booking){return;}
+
+    const container = document.getElementById("detailsContainer");
+
+    container.innerHTML = `
+
+        <div class="details-header">
+            <div>
+                <div class="details-name">${escapeHTML(booking.name)}</div>
+            </div>
+
+            <span class="badge ${bookingStatusClass(booking.bookingStatus)}">
+                ${escapeHTML(booking.bookingStatus)}
+            </span>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">SERVICE</div>
+            <div class="detail-value">${escapeHTML(booking.service)}</div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">APPOINTMENT</div>
+            <div class="detail-value">
+                ${formatDate(booking.date)} at ${escapeHTML(booking.time)}
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">CUSTOMER CONTACT</div>
+            <div class="detail-value">
+                ${escapeHTML(booking.email)}
+                <br>
+                ${escapeHTML(booking.phone)}
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">ADDRESS</div>
+            <div class="detail-value">${escapeHTML(booking.address)}</div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">CUSTOMER NOTES</div>
+            <div class="detail-note">
+                ${booking.customerNotes ? escapeHTML(booking.customerNotes) : "No customer notes."}
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">PAYMENT</div>
+
+            <div class="payment-box">
+                <div class="amount">${money(booking.amount)}</div>
+
+                <select id="paymentSelect" class="payment-select">
+                    <option value="Unpaid" ${booking.paymentStatus === "Unpaid" ? "selected" : ""}>Pending / Unpaid</option>
+                    <option value="Partial" ${booking.paymentStatus === "Partial" ? "selected" : ""}>Partial Payment</option>
+                    <option value="Paid" ${booking.paymentStatus === "Paid" ? "selected" : ""}>Paid</option>
+                </select>
+
+                <button type="button" class="save-payment" onclick="updatePayment(${booking.id})">
+                    SAVE PAYMENT STATUS
+                </button>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">CUSTOMER LOCATION</div>
+
+            <div class="owner-map">
+                <div id="ownerMapContainer" class="owner-map-inner"></div>
+
+                ${
+                    booking.lat && booking.lng
+                    ? ""
+                    : `<div class="owner-no-location">No map coordinates were saved for this booking.</div>`
+                }
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-label">PRIVATE OWNER NOTES</div>
+
+            <textarea id="ownerNote" class="owner-note" placeholder="Private notes...">${escapeHTML(booking.ownerNotes || "")}</textarea>
+
+            <button type="button" class="save-note" onclick="saveOwnerNote(${booking.id})">
+                SAVE OWNER NOTES
+            </button>
+        </div>
+
+        <div class="status-actions">
+            <button type="button" class="action-confirm" onclick="updateBookingStatus(${booking.id},'Confirmed')">CONFIRM</button>
+            <button type="button" class="action-complete" onclick="updateBookingStatus(${booking.id},'Completed')">COMPLETED</button>
+            <button type="button" class="action-cancel" onclick="updateBookingStatus(${booking.id},'Cancelled')">CANCEL</button>
+            <button type="button" class="action-delete" onclick="deleteBooking(${booking.id})">DELETE</button>
+        </div>
+
+    `;
+
+    /* Owner map is initialized only after #ownerMapContainer exists. */
+    setTimeout(()=>{initOwnerMap(booking);},100);
+}
+
+
+/* =========================================================
+   OWNER MAP INITIALIZATION
+========================================================= */
+
+function initOwnerMap(booking){
+
+    const container = document.getElementById("ownerMapContainer");
+
+    if(!container){return;}
+
+    if(ownerMap){
+        ownerMap.remove();
+        ownerMap = null;
+        ownerMarker = null;
+    }
+
+    ownerMap = L.map(container,{zoomControl:true}).setView([14.17,121.24],13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+        attribution:"&copy; OpenStreetMap contributors",
+        maxZoom:19
+    }).addTo(ownerMap);
+
+    setTimeout(()=>{ownerMap.invalidateSize();},200);
+
+    if(booking.lat && booking.lng){
+
+        const lat = Number(booking.lat);
+        const lng = Number(booking.lng);
+
+        if(Number.isFinite(lat) && Number.isFinite(lng)){
+
+            ownerMap.flyTo([lat,lng],17,{duration:1});
+
+            ownerMarker = L.marker([lat,lng]).addTo(ownerMap);
+
+            ownerMarker
+                .bindPopup(`<strong>Customer Location</strong><br>${escapeHTML(booking.address)}`)
+                .openPopup();
+        }
+    }
+}
+
+
+/* =========================================================
+   UPDATE BOOKING STATUS
+========================================================= */
+
+function updateBookingStatus(id,status){
+
+    const bookings = getBookings();
+    const booking = bookings.find(b => Number(b.id) === Number(id));
+
+    if(!booking){return;}
+
+    booking.bookingStatus = status;
+
+    saveBookings(bookings);
+    renderOwner();
+    viewBooking(id);
+    showToast("Booking status updated.");
+}
+
+
+/* PAYMENT */
+
+function updatePayment(id){
+
+    const select = document.getElementById("paymentSelect");
+
+    if(!select){return;}
+
+    const bookings = getBookings();
+    const booking = bookings.find(b => Number(b.id) === Number(id));
+
+    if(!booking){return;}
+
+    booking.paymentStatus = select.value;
+
+    saveBookings(bookings);
+    renderOwner();
+    viewBooking(id);
+    showToast("Payment status updated.");
+}
+
+
+/* OWNER NOTES */
+
+function saveOwnerNote(id){
+
+    const input = document.getElementById("ownerNote");
+
+    if(!input){return;}
+
+    const bookings = getBookings();
+    const booking = bookings.find(b => Number(b.id) === Number(id));
+
+    if(!booking){return;}
+
+    booking.ownerNotes = input.value;
+
+    saveBookings(bookings);
+    showToast("Owner notes saved.");
+}
+
+
+/* DELETE */
+
+function deleteBooking(id){
+
+    const confirmed = confirm("Delete this booking permanently?");
+
+    if(!confirmed){return;}
+
+    let bookings = getBookings();
+
+    bookings = bookings.filter(b => Number(b.id) !== Number(id));
+
+    saveBookings(bookings);
+
+    document.getElementById("detailsContainer").innerHTML =
+        `<div class="details-empty">Booking deleted.</div>`;
+
+    renderOwner();
+    showToast("Booking deleted.");
+}
+
+
+/* SEARCH */
+
+document.getElementById("bookingSearch").addEventListener("input",renderOwner);
+
+
+/* =========================================================
+   EXCEL EXPORT
+========================================================= */
+
+document.getElementById("exportExcel").addEventListener("click",()=>{
+
+    const bookings = getBookings();
+
+    if(!bookings.length){
+        showToast("No bookings to export.");
+        return;
+    }
+
+    const excelData = bookings.map(booking=>({
+        "Booking ID":booking.id,
+        "Customer Name":booking.name,
+        "Email":booking.email,
+        "Phone":booking.phone,
+        "Service":booking.service,
+        "Appointment Date":booking.date,
+        "Appointment Time":booking.time,
+        "Address":booking.address,
+        "Location":booking.location,
+        "Latitude":booking.lat,
+        "Longitude":booking.lng,
+        "Amount":booking.amount,
+        "Booking Status":booking.bookingStatus,
+        "Payment Status":booking.paymentStatus,
+        "Customer Notes":booking.customerNotes,
+        "Owner Notes":booking.ownerNotes,
+        "Created At":booking.createdAt
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+    /* Readable Excel column widths. */
+    worksheet["!cols"] = [
+        {wch:15},{wch:25},{wch:30},{wch:18},{wch:25},{wch:18},{wch:18},{wch:40},{wch:40},
+        {wch:14},{wch:14},{wch:14},{wch:18},{wch:18},{wch:40},{wch:40},{wch:25}
+    ];
+
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook,worksheet,"Bookings");
+
+    const filename = "Lumea_Bookings_" + new Date().toISOString().slice(0,10) + ".xlsx";
+
+    XLSX.writeFile(workbook,filename);
+
+    showToast("Excel file exported.");
+});
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function money(amount){
+    return "₱" + Number(amount || 0).toLocaleString("en-PH");
+}
+
+function formatDate(date){
+
+    if(!date){return "";}
+
+    const parsed = new Date(date + "T00:00:00");
+
+    if(Number.isNaN(parsed.getTime())){
+        return date;
+    }
+
+    return parsed.toLocaleDateString("en-PH",{month:"short",day:"numeric",year:"numeric"});
+}
+
+function bookingStatusClass(status){
+    return {
+        Pending:"badge-pending",
+        Confirmed:"badge-confirmed",
+        Completed:"badge-completed",
+        Cancelled:"badge-cancelled"
+    }[status] || "badge-pending";
+}
+
+function paymentStatusClass(status){
+    return {
+        Unpaid:"badge-unpaid",
+        Partial:"badge-partial",
+        Paid:"badge-paid"
+    }[status] || "badge-unpaid";
+}
+
+
+/* SECURITY */
+
+function escapeHTML(value){
+    return String(value ?? "").replace(/[&<>"']/g,character=>({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+    })[character]);
+}
+
+
+/* TOAST */
+
+function showToast(message){
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer = setTimeout(()=>{
+        toast.classList.remove("show");
+    },2500);
+}
+
+
+/* RESIZE MAP */
+
+window.addEventListener("resize",()=>{
+    if(customerMap){customerMap.invalidateSize();}
+    if(ownerMap){ownerMap.invalidateSize();}
+});
+
+
+/* INITIAL REFRESH */
+
+window.addEventListener("load",()=>{
+    setTimeout(()=>{
+        ScrollTrigger.refresh();
+        if(customerMap){customerMap.invalidateSize();}
+    },700);
+});
+
+</script>
+
+
+<!-- =========================================================
+     3D COLLECTION (Three.js)
+     Camera stands inside a ring of curved picture panels.
+     Scroll or drag spins the ring; speed warps the lens.
+========================================================= -->
+<script>
+(function () {
+
+    if (!window.THREE) {
+        console.warn("Three.js failed to load. Collection gallery skipped.");
+        return;
+    }
+
+    /* =====================================================
+       YOUR COLLECTION — EDIT THESE PICTURES
+       Replace each src with your own photo URL or a file
+       path such as "images/bridal.jpg".
+    ===================================================== */
+
+    const ITEMS = [
+        {
+            title: "Full Glam",
+            note: "Defined eyes, sculpted skin, made to be photographed.",
+            src: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1000&q=85"
+        },
+        {
+            title: "Soft Glam",
+            note: "A glowing, skin-first finish for everyday occasions.",
+            src: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=1000&q=85"
+        },
+        {
+            title: "Bridal Makeup",
+            note: "Long-wearing and timeless, from the first look to the last dance.",
+            src: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1000&q=85"
+        },
+        {
+            title: "Editorial Makeup",
+            note: "Bold color and shape for shoots and creative work.",
+            src: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1000&q=85"
+        },
+        {
+            title: "The Palette",
+            note: "The products and tools behind every LUMÉA look.",
+            src: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=1000&q=85"
+        },
+        {
+            title: "In The Studio",
+            note: "Where every appointment begins.",
+            src: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1000&q=85"
+        }
+    ];
+
+    const section = document.getElementById("collection");
+    const canvas = document.getElementById("colCanvas");
+    const pin = canvas.parentElement;
+
+    const N = ITEMS.length;
+    const STEP = (Math.PI * 2) / N;
+    const RADIUS = 12;
+    const ARC = STEP * 0.66;
+    const HEIGHT = 11;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.setClearColor(0x11100f, 1);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+    camera.position.set(0, 0, 0);
+
+    const ring = new THREE.Group();
+    scene.add(ring);
+
+
+    /* ---------- fallback texture if a picture fails ---------- */
+
+    function makeFallback(title) {
+        const c = document.createElement("canvas");
+        c.width = 600;
+        c.height = 800;
+        const g = c.getContext("2d");
+        const grad = g.createLinearGradient(0, 0, 600, 800);
+        grad.addColorStop(0, "#2a1f20");
+        grad.addColorStop(0.55, "#a96872");
+        grad.addColorStop(1, "#d3aa87");
+        g.fillStyle = grad;
+        g.fillRect(0, 0, 600, 800);
+        g.fillStyle = "rgba(255,255,255,.9)";
+        g.font = "56px Georgia, serif";
+        g.textAlign = "center";
+        g.fillText(title, 300, 420);
+        const t = new THREE.CanvasTexture(c);
+        t.encoding = THREE.sRGBEncoding;
+        return t;
+    }
+
+    function setCover(tex, w, h) {
+        const panelAspect = (RADIUS * ARC) / HEIGHT;
+        const imgAspect = w / h;
+        let kx = 1, ky = 1;
+        if (imgAspect > panelAspect) {
+            kx = panelAspect / imgAspect;
+        } else {
+            ky = imgAspect / panelAspect;
+        }
+        /* u is flipped because we look at the cylinder from inside */
+        tex.repeat.set(-kx, ky);
+        tex.offset.set(0.5 + kx / 2, (1 - ky) / 2);
+    }
+
+
+    /* ---------- panels ---------- */
+
+    const placeholder = new THREE.DataTexture(
+        new Uint8Array([36, 31, 30, 255]), 1, 1, THREE.RGBAFormat
+    );
+    placeholder.needsUpdate = true;
+
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin("anonymous");
+
+    const panels = [];
+
+    ITEMS.forEach((item, i) => {
+
+        const geometry = new THREE.CylinderGeometry(
+            RADIUS, RADIUS, HEIGHT, 56, 1, true, -ARC / 2, ARC
+        );
+
+        const material = new THREE.MeshBasicMaterial({
+            map: placeholder,
+            side: THREE.BackSide,
+            color: 0xffffff
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.y = i * STEP;
+        mesh.userData.index = i;
+        ring.add(mesh);
+
+        /* thin gold frame */
+        const edges = new THREE.LineSegments(
+            new THREE.EdgesGeometry(geometry),
+            new THREE.LineBasicMaterial({
+                color: 0xb99561,
+                transparent: true,
+                opacity: 0.55
+            })
+        );
+        mesh.add(edges);
+
+        panels.push({ mesh, material, edges, bright: 0.3, scale: 1 });
+
+        loader.load(
+            item.src,
+            tex => {
+                tex.encoding = THREE.sRGBEncoding;
+                tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                setCover(tex, tex.image.width, tex.image.height);
+                material.map = tex;
+                material.needsUpdate = true;
+            },
+            undefined,
+            () => {
+                material.map = makeFallback(item.title);
+                material.needsUpdate = true;
+            }
+        );
+    });
+
+
+    /* ---------- gold rings (top + bottom) ---------- */
+
+    function makeRing(y) {
+        const pts = [];
+        for (let a = 0; a <= 128; a++) {
+            const t = (a / 128) * Math.PI * 2;
+            pts.push(new THREE.Vector3(
+                Math.sin(t) * (RADIUS - 0.05), y, Math.cos(t) * (RADIUS - 0.05)
+            ));
+        }
+        return new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(pts),
+            new THREE.LineBasicMaterial({
+                color: 0xb99561,
+                transparent: true,
+                opacity: 0.35
+            })
+        );
+    }
+
+    scene.add(makeRing(HEIGHT / 2 + 0.8));
+    scene.add(makeRing(-HEIGHT / 2 - 0.8));
+
+
+    /* ---------- gold dust ---------- */
+
+    const DUST = 900;
+    const dustPos = new Float32Array(DUST * 3);
+
+    for (let i = 0; i < DUST; i++) {
+        const r = 3 + Math.random() * 8.5;
+        const t = Math.random() * Math.PI * 2;
+        dustPos[i * 3] = Math.sin(t) * r;
+        dustPos[i * 3 + 1] = (Math.random() - 0.5) * 22;
+        dustPos[i * 3 + 2] = Math.cos(t) * r;
+    }
+
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+
+    const dust = new THREE.Points(
+        dustGeo,
+        new THREE.PointsMaterial({
+            color: 0xd3aa87,
+            size: 0.09,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        })
+    );
+    scene.add(dust);
+
+
+    /* =====================================================
+       INTERACTION STATE
+    ===================================================== */
+
+    let progress = 0;      /* scroll 0 → 1        */
+    let dragOffset = 0;    /* extra spin from drag */
+    let current = 0;       /* smoothed rotation    */
+    let velocity = 0;      /* scroll velocity      */
+    let lastScrollY = window.scrollY;
+
+    const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
+    let hovered = -1;
+    let activeIndex = -1;
+    let visible = false;
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    const hud = document.getElementById("colHud");
+    const countEl = document.getElementById("colCount");
+    const nameEl = document.getElementById("colName");
+    const noteEl = document.getElementById("colNote");
+    const headEl = document.getElementById("colHead");
+    const barEl = document.getElementById("colProgress");
+
+    function pad(n) {
+        return String(n).padStart(2, "0");
+    }
+
+    function setActive(index) {
+        if (index === activeIndex) return;
+        const first = activeIndex === -1;
+        activeIndex = index;
+
+        const apply = () => {
+            countEl.textContent = pad(index + 1) + " / " + pad(N);
+            nameEl.textContent = ITEMS[index].title;
+            noteEl.textContent = ITEMS[index].note;
+            hud.classList.remove("swap");
+        };
+
+        if (first) {
+            apply();
+        } else {
+            hud.classList.add("swap");
+            setTimeout(apply, 180);
+        }
+    }
+
+    function scrollTotal() {
+        return (N - 1) * STEP;
+    }
+
+    function readScroll() {
+        const rect = section.getBoundingClientRect();
+        const range = section.offsetHeight - window.innerHeight;
+        progress = Math.min(1, Math.max(0, -rect.top / range));
+
+        const y = window.scrollY;
+        velocity = y - lastScrollY;
+        lastScrollY = y;
+    }
+
+    window.addEventListener("scroll", readScroll, { passive: true });
+
+
+    /* ---------- pointer: hover, drag, click ---------- */
+
+    let dragging = false;
+    let dragLastX = 0;
+    let dragMoved = 0;
+
+    function updatePointer(e) {
+        const rect = canvas.getBoundingClientRect();
+        pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        mouse.x = pointer.x;
+        mouse.y = pointer.y;
+    }
+
+    function pick() {
+        raycaster.setFromCamera(pointer, camera);
+        const hits = raycaster.intersectObjects(ring.children, false);
+        return hits.length ? hits[0].object.userData.index : -1;
+    }
+
+    canvas.addEventListener("pointerdown", e => {
+        dragging = true;
+        dragLastX = e.clientX;
+        dragMoved = 0;
+        canvas.classList.add("grabbing");
+        canvas.setPointerCapture(e.pointerId);
+        updatePointer(e);
+    });
+
+    canvas.addEventListener("pointermove", e => {
+        updatePointer(e);
+
+        if (dragging) {
+            const dx = e.clientX - dragLastX;
+            dragLastX = e.clientX;
+            dragMoved += Math.abs(dx);
+            dragOffset -= dx * 0.006;
+        } else {
+            hovered = pick();
+            canvas.classList.toggle("hovering", hovered !== -1);
+        }
+    });
+
+    function endDrag(e) {
+        if (!dragging) return;
+        dragging = false;
+        canvas.classList.remove("grabbing");
+
+        updatePointer(e);
+
+        if (dragMoved < 6) {
+            const index = pick();
+            if (index !== -1) openViewer(index);
+        } else {
+            /* snap to nearest look */
+            const base = progress * scrollTotal();
+            const total = base + dragOffset;
+            dragOffset = Math.round(total / STEP) * STEP - base;
+        }
+    }
+
+    canvas.addEventListener("pointerup", endDrag);
+    canvas.addEventListener("pointercancel", endDrag);
+
+    canvas.addEventListener("pointerleave", () => {
+        if (!dragging) {
+            hovered = -1;
+            canvas.classList.remove("hovering");
+        }
+    });
+
+
+    /* ---------- viewer ---------- */
+
+    const viewer = document.getElementById("colViewer");
+    const viewerImg = document.getElementById("colViewerImg");
+    const viewerCap = document.getElementById("colViewerCap");
+
+    function openViewer(index) {
+        const item = ITEMS[index];
+        viewerImg.src = item.src;
+        viewerImg.alt = item.title;
+        viewerCap.innerHTML = "";
+        viewerCap.append(item.title);
+        const span = document.createElement("span");
+        span.textContent = item.note;
+        viewerCap.appendChild(span);
+        viewer.classList.add("open");
+    }
+
+    function closeViewer() {
+        viewer.classList.remove("open");
+    }
+
+    document.getElementById("colClose").addEventListener("click", closeViewer);
+    viewer.addEventListener("click", e => {
+        if (e.target === viewer) closeViewer();
+    });
+    document.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeViewer();
+    });
+
+
+    /* =====================================================
+       RESIZE + RENDER LOOP
+    ===================================================== */
+
+    let baseFov = 60;
+
+    function resize() {
+        const w = pin.clientWidth;
+        const h = pin.clientHeight;
+        if (!w || !h) return;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        baseFov = camera.aspect < 0.8 ? 80 : camera.aspect < 1.2 ? 68 : 60;
+        camera.fov = baseFov;
+        camera.updateProjectionMatrix();
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    new IntersectionObserver(entries => {
+        visible = entries[0].isIntersecting;
+    }, { rootMargin: "100px" }).observe(section);
+
+    function wrapAngle(a) {
+        const twoPi = Math.PI * 2;
+        return ((a + Math.PI) % twoPi + twoPi) % twoPi - Math.PI;
+    }
+
+    const clock = new THREE.Clock();
+    let tilt = 0;
+    let fovKick = 0;
+
+    function frame() {
+        requestAnimationFrame(frame);
+        if (!visible) return;
+
+        const time = clock.getElapsedTime();
+
+        /* decay velocity between scroll events */
+        velocity *= 0.88;
+
+        /* smooth rotation */
+        const target = progress * scrollTotal() + dragOffset;
+        current += (target - current) * (reduceMotion ? 1 : 0.07);
+        ring.rotation.y = -current;
+
+        /* speed effects: roll + lens warp */
+        if (!reduceMotion) {
+            const v = Math.max(-80, Math.min(80, velocity));
+            tilt += (v * 0.0016 - tilt) * 0.08;
+            fovKick += (Math.abs(v) * 0.12 - fovKick) * 0.08;
+        }
+        ring.rotation.z = tilt;
+        camera.fov = baseFov + fovKick;
+        camera.updateProjectionMatrix();
+
+        /* mouse parallax */
+        mouse.sx += (mouse.x - mouse.sx) * 0.05;
+        mouse.sy += (mouse.y - mouse.sy) * 0.05;
+        camera.position.set(mouse.sx * 0.7, mouse.sy * 0.4, 0);
+        camera.lookAt(mouse.sx * 2.2, mouse.sy * 1.4, 12);
+
+        /* dust drifts against the ring */
+        dust.rotation.y = current * 0.6 + time * 0.03;
+        dust.position.y = Math.sin(time * 0.4) * 0.4;
+
+        /* per-panel brightness + hover push */
+        let nearest = 0;
+        let nearestDiff = Infinity;
+
+        panels.forEach((p, i) => {
+            const diff = wrapAngle(i * STEP - current);
+            const abs = Math.abs(diff);
+
+            if (abs < nearestDiff) {
+                nearestDiff = abs;
+                nearest = i;
+            }
+
+            let bright = Math.max(0.2, 1 - abs * 0.62);
+            if (i === hovered) bright = Math.min(1, bright + 0.15);
+
+            p.bright += (bright - p.bright) * 0.12;
+            p.material.color.setScalar(p.bright);
+            p.edges.material.opacity = 0.2 + p.bright * 0.5;
+
+            const s = i === hovered && !dragging ? 0.94 : 1;
+            p.scale += (s - p.scale) * 0.1;
+            p.mesh.scale.set(p.scale, 1 + (1 - p.scale) * 0.6, p.scale);
+        });
+
+        setActive(nearest);
+
+        /* heading fades as the ring starts to turn */
+        const fade = Math.max(0, 1 - progress * 7);
+        headEl.style.opacity = fade;
+        headEl.style.transform = "translateY(" + (-(1 - fade) * 40) + "px)";
+        barEl.style.transform = "scaleY(" + progress + ")";
+
+        renderer.render(scene, camera);
+    }
+
+    readScroll();
+    setActive(0);
+    frame();
+
+    /* GSAP changes layout heights, so re-measure once after load */
+    window.addEventListener("load", () => {
+        setTimeout(() => {
+            resize();
+            readScroll();
+            if (window.ScrollTrigger) ScrollTrigger.refresh();
+        }, 800);
+    });
+
+})();
+</script>
+
+</body>
+</html>
