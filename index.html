@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LUMÉA Beauty Studio</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<!-- GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<!-- Three.js (3D collection) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+    <a href="#" class="logo">LUMÉA</a>
+    <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#collection">Collection</a>
+        <a href="#booking">Appointment</a>
+        <button type="button" class="owner-button" id="openOwner">OWNER</button>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-grid"></div>
+
+    <div class="hero-photo">
+        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85" alt="Beauty makeup">
+    </div>
+
+    <div class="hero-content">
+        <div class="eyebrow">BEAUTY STUDIO / MAKEUP ARTISTRY</div>
+        <h1 class="hero-title">YOUR<br><em>SIGNATURE.</em></h1>
+        <p class="hero-description">
+            Professional makeup artistry for celebrations, special occasions and everyday beauty.
+        </p>
+    </div>
+
+    <div class="hero-side">
+        LUMÉA BEAUTY STUDIO
+        <br><br>
+        Makeup designed around your personality, style and occasion.
+    </div>
+
+    <div class="scroll-indicator">SCROLL DOWN</div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+    <div class="about-photo">
+        <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=800&q=85" alt="Beauty products">
+    </div>
+
+    <div class="about-number">01 / ABOUT LUMÉA</div>
+
+    <h2 class="about-title">Simple.<br>Elegant.<br><em>Yours.</em></h2>
+
+    <p class="about-text">
+        LUMÉA is a modern beauty studio focused on clean artistry and personalized makeup.
+        <br><br>
+        Every appointment is adjusted according to the customer's preferred style, features and occasion.
+    </p>
+</section>
+
+<!-- SCROLL STORY -->
+<section class="story">
+    <div class="story-pin">
+        <div class="story-bg" id="storyBackground"></div>
+
+        <div class="story-photo">
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&q=85" alt="Makeup cosmetics">
+        </div>
+
+        <div class="story-overlay"></div>
+
+        <div class="story-title">
+            <small>02 / OUR APPROACH</small>
+            <h2>MADE<br><em>FOR YOU.</em></h2>
+        </div>
+
+        <div class="story-copy">
+            Every appointment starts with understanding what you want.
+            <br><br>
+            Then we build the look around you.
+        </div>
+    </div>
+</section>
+
+<!-- VALUES -->
+<section class="values">
+    <div class="about-number">03 / WHAT WE VALUE</div>
+
+    <h2 class="values-title">BEAUTY<br>WITH<br>PURPOSE.</h2>
+
+    <div class="values-list">
+        <div class="value">
+            <div class="value-number">01</div>
+            <div class="value-name">Personal</div>
+            <div class="value-description">Every appointment is customized around your preferences.</div>
+        </div>
+        <div class="value">
+            <div class="value-number">02</div>
+            <div class="value-name">Professional</div>
+            <div class="value-description">Quality products, clean techniques and detailed application.</div>
+        </div>
+        <div class="value">
+            <div class="value-number">03</div>
+            <div class="value-name">Memorable</div>
+            <div class="value-description">Your appointment should feel as good as the final result.</div>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+    <div class="services-top">
+        <div>
+            <div class="about-number">04 / SERVICES</div>
+            <h2 class="services-title">FIND<br>YOUR LOOK.</h2>
+        </div>
+
+        <p class="services-info">
+            Choose the service that matches your occasion.
+            <br><br>
+            Prices are automatically included in the booking management system.
+        </p>
+    </div>
+
+    <div class="service-list">
+        <div class="service"><div class="service-name">Soft Glam</div><div class="service-price">₱1,200</div></div>
+        <div class="service"><div class="service-name">Full Glam</div><div class="service-price">₱1,800</div></div>
+        <div class="service"><div class="service-name">Bridal Makeup</div><div class="service-price">₱3,500</div></div>
+        <div class="service"><div class="service-name">Editorial Makeup</div><div class="service-price">₱2,500</div></div>
+        <div class="service"><div class="service-name">Makeup Consultation</div><div class="service-price">₱500</div></div>
+    </div>
+</section>
+
+<!-- 3D COLLECTION -->
+<section class="collection" id="collection">
+    <div class="col-pin">
+        <canvas id="colCanvas" aria-label="3D gallery of LUMÉA makeup looks"></canvas>
+        <div class="col-vignette"></div>
+
+        <div class="col-head" id="colHead">
+            <small>05 / THE COLLECTION</small>
+            <h2>OUR<br><em>LOOKS.</em></h2>
+        </div>
+
+        <div class="col-progress"><span id="colProgress"></span></div>
+
+        <div class="col-hud" id="colHud">
+            <div class="col-count" id="colCount"></div>
+            <div class="col-name" id="colName"></div>
+            <div class="col-note" id="colNote"></div>
+        </div>
+
+        <div class="col-hint">
+            SCROLL OR DRAG TO TURN
+            <br>
+            CLICK A LOOK TO OPEN
+        </div>
+    </div>
+</section>
+
+<!-- COLLECTION VIEWER -->
+<div class="col-viewer" id="colViewer">
+    <button type="button" class="col-close" id="colClose">CLOSE</button>
+    <figure>
+        <img id="colViewerImg" alt="">
+        <figcaption id="colViewerCap"></figcaption>
+    </figure>
+</div>
+
+<!-- BOOKING -->
+<section class="booking" id="booking">
+    <div class="booking-header">
+        <div>
+            <div class="about-number">06 / APPOINTMENT</div>
+            <h2 class="booking-title">BOOK<br><em>YOUR LOOK.</em></h2>
+        </div>
+
+        <p class="booking-intro">
+            Choose your preferred service, date and time.
+            <br><br>
+            Add your address so the owner can view your appointment location on the map.
+        </p>
+    </div>
+
+    <div class="booking-grid">
+
+        <form class="form-card" id="bookingForm">
+            <div class="form-title">Appointment Details</div>
+
+            <div class="field">
+                <label>FULL NAME</label>
+                <input id="customerName" required placeholder="Juan Dela Cruz">
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label>EMAIL</label>
+                    <input id="customerEmail" type="email" required placeholder="email@example.com">
+                </div>
+                <div class="field">
+                    <label>PHONE</label>
+                    <input id="customerPhone" type="tel" required placeholder="09XXXXXXXXX">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>SERVICE</label>
+                <select id="bookingService" required>
+                    <option value="">Select service</option>
+                    <option value="Soft Glam">Soft Glam — ₱1,200</option>
+                    <option value="Full Glam">Full Glam — ₱1,800</option>
+                    <option value="Bridal Makeup">Bridal Makeup — ₱3,500</option>
+                    <option value="Editorial Makeup">Editorial Makeup — ₱2,500</option>
+                    <option value="Makeup Consultation">Makeup Consultation — ₱500</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label>DATE</label>
+                    <input id="bookingDate" type="date" required>
+                </div>
+                <div class="field">
+                    <label>TIME</label>
+                    <input id="bookingTime" type="time" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>ADDRESS</label>
+                <div class="address-row">
+                    <input id="customerAddress" required placeholder="Complete address">
+                    <button type="button" class="find-location" id="findCustomerLocation">FIND MAP</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>CUSTOMER NOTES</label>
+                <textarea id="customerNotes" placeholder="Special requests or details..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-booking">SEND APPOINTMENT REQUEST</button>
+        </form>
+
+        <div class="map-wrapper">
+            <div class="map-label">
+                <strong>Appointment Location</strong>
+                <span id="customerMapStatus">Enter your address and click FIND MAP.</span>
+            </div>
+            <div id="customerMap"></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-brand">LUMÉA<br><em>BEAUTY.</em></div>
+    <div class="footer-bottom">
+        <div>© 2026 LUMÉA BEAUTY STUDIO</div>
+        <div>MAKEUP / BEAUTY / ARTISTRY</div>
+    </div>
+</footer>
+
+<!-- OWNER DASHBOARD -->
+<div class="owner-dashboard" id="ownerDashboard">
+
+    <div class="owner-nav">
+        <div class="owner-logo">LUMÉA / OWNER MANAGEMENT</div>
+        <div class="owner-nav-right">
+            <div class="owner-online">● MANAGEMENT</div>
+            <button type="button" class="close-owner" id="closeOwner">CLOSE</button>
+        </div>
+    </div>
+
+    <div class="owner-content">
+
+        <div class="owner-heading">
+            <div>
+                <h1>Bookings.</h1>
+                <p>Manage appointments, customers, payments and locations.</p>
+            </div>
+            <button type="button" class="export-excel" id="exportExcel">EXPORT TO EXCEL</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><small>TOTAL BOOKINGS</small><strong id="statTotal">0</strong></div>
+            <div class="stat"><small>PENDING</small><strong id="statPending">0</strong></div>
+            <div class="stat"><small>CONFIRMED</small><strong id="statConfirmed">0</strong></div>
+            <div class="stat"><small>COMPLETED</small><strong id="statCompleted">0</strong></div>
+            <div class="stat"><small>PAID</small><strong id="statPaid">₱0</strong></div>
+            <div class="stat"><small>PENDING PAYMENT</small><strong id="statUnpaid">₱0</strong></div>
+        </div>
+
+        <div class="owner-grid">
+
+            <div class="owner-panel">
+                <div class="panel-heading">
+                    <h3>Customer Booking List</h3>
+                    <input type="search" id="bookingSearch" class="search-bookings" placeholder="Search customer...">
+                </div>
+
+                <div class="table-scroll">
+                    <table class="booking-table">
+                        <thead>
+                            <tr>
+                                <th>CUSTOMER</th>
+                                <th>SERVICE</th>
+                                <th>APPOINTMENT</th>
+                                <th>AMOUNT</th>
+                                <th>STATUS</th>
+                                <th>PAYMENT</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="owner-panel">
+                <div id="detailsContainer" class="details-panel">
+                    <div class="details-empty">Select a booking to view details.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Saved.</div>
+
+
+<!-- =========================================================
+     3D COLLECTION (Three.js)
+     Camera stands inside a ring of curved picture panels.
+     Scroll or drag spins the ring; speed warps the lens.
+========================================================= -->
+
+<script src="script.js"></script>
+
+</body>
+</html>
